@@ -1,0 +1,17 @@
+Energy [GeV]	 Cross Section [cm2]
+LHAPDF 6.1.3 loading all 51 PDFs in set CT10nnlo
+CT10nnlo, version 1; 51 PDF members
+LHAPDF 6.1.3 loading all 21 PDFs in set HERAPDF15NLO_EIG
+HERAPDF15NLO_EIG, version 1; 21 PDF members
+1.00e+10	 4.1011e-33
+2.00e+10	 4.2117e-33
+5.00e+10	 4.3067e-33
+1.00e+11	 4.3540e-33
+2.00e+11	 4.3888e-33
+5.00e+11	 4.4249e-33
+1.00e+12	 4.4490e-33
+2.00e+12	 4.4722e-33
+5.00e+12	 4.5028e-33
+1.00e+13	 4.5267e-33
+2.00e+13	 4.5543e-33
+5.00e+13	 4.5901e-33
