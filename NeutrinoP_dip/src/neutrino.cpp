@@ -12,15 +12,15 @@ Neutrino::Neutrino(Dipole * dp,bool interaction):dp(dp),interaction(interaction)
     Mboson2 = SQ(Mboson);
 
     s_w = 0.2223;
-    
+
     proton_size = 10./pc.GeV;
     N_colors = 3.;
-    
+
     G_Fermi = pc.GF;
     GF2 = SQ(G_Fermi);
 
-    pdfname = "HERAPDF15NNLO_EIG";
-    //pdfname = "CT10nnlo";
+    //pdfname = "HERAPDF15NNLO_EIG";
+    pdfname = "CT10nnlo";
     set = new LHAPDF::PDFSet(pdfname);
     nmem = set->size()-1;
     pdfs = set->mkPDFs();

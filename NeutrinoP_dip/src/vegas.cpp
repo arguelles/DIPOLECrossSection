@@ -20,63 +20,71 @@ double VegasIntegrator::Kernel_per(double x, double y){
 double VegasIntegrator::GSLKernel_dip(double* xx){
 #ifdef _LOG_INT_
     double x = exp(xx[0]);
-    double y = exp(xx[1]);
-    double JAC = x*y;
+    double JAC = x*Y_;
 #else
     double x = xx[0];
-    double y = xx[1];
     double JAC = 1.0;
 #endif
     double z = xx[2];
     double r = xx[3];
 
-    return Kernel_dip(r, z, x, y)*JAC;
+    return Kernel_dip(r, z, x, Y_)*JAC;
 }
 
 double VegasIntegrator::GSLKernel_per(double* xx){
 #ifdef _LOG_INT_
     double x = exp(xx[0]);
-    double y = exp(xx[1]);
-    double JAC = x*y;
+    double JAC = x*Y_;
 #else
     double x = xx[0];
-    double y = xx[1];
     double JAC = 1.0;
 #endif
 
-    return Kernel_per(x, y)*JAC;
+    return Kernel_per(x, Y_)*JAC;
 }
 
-double VegasIntegrator::CalculateNeutrinoCrossSection(double enu){
+double VegasIntegrator::GSLKernel_per_dif(double* xx){
+#ifdef _LOG_INT_
+    double x = exp(xx[0]);
+    double JAC = x*Y_;
+#else
+    double x = xx[0];
+    double JAC = 1.0;
+#endif
+    return Kernel_per(x, Y_)*JAC;
+}
+
+double VegasIntegrator::CalculateDifferentialNeutrinoCrossSection(double enu, double y){
   ENERGY = enu;
+  Y_ = y;
   nuN->Set_E_Neutrino(enu);
   int calls = 100000;
   double GeV = 1.e9;
   // for dipole
-  const unsigned long dim_dip = 4; 
+  const unsigned long dim_dip = 3;
   double res_dip,err_dip;
   double x0 = 1.0e-5;
 
 #ifdef _LOG_INT_
-  //	        		            x         y     z        r
-  double xl_dip[dim_dip] = { log(1.0e-15)  ,   log(1.e-15)  , 0.   ,   0.          };
-  double xu_dip[dim_dip] = { log(x0)  ,   log(1.) , 1.   ,  proton_size  };
+  //	        		            x              z        r
+  double xl_dip[dim_dip] = { log(1.0e-15)  , 0.   ,   0.          };
+  double xu_dip[dim_dip] = { log(x0)       , 1.   ,  proton_size  };
 
-  // for perturbative 
-  const unsigned long dim_per = 2;
+  // for perturbative
+  const unsigned long dim_per = 1;
   double res_per,err_per;
-  double xl_per[dim_per] = { log(x0)  ,   log(1.e-15) };
-  double xu_per[dim_per] = { log(1.)  ,   log(1.)     };
+  double xl_per[dim_per] = { log(x0) };
+  double xu_per[dim_per] = { log(1.) };
 #else
-  //	        		            x         y     z        r
-  double xl_dip[dim_dip] = { 0      ,   0. , 0.   ,   0.          };
-  double xu_dip[dim_dip] = { x0     ,   1. , 1.   ,  proton_size  };
+  //	        		            x        z        r
+  double xl_dip[dim_dip] = { 0      ,  0.   ,   0.          };
+  double xu_dip[dim_dip] = { x0     ,  1.   ,  proton_size  };
 
-  // for perturbative 
-  const unsigned long dim_per = 2;
+  // for perturbative
+  const unsigned long dim_per = 1;
   double res_per,err_per;
-  double xl_per[dim_per] = { x0  ,   0. };
-  double xu_per[dim_per] = { 1.     ,   1. };
+  double xl_per[dim_per] = { x0 };
+  double xu_per[dim_per] = { 1. };
 
 #endif
 
@@ -119,5 +127,4 @@ double VegasIntegrator::CalculateNeutrinoCrossSection(double enu){
   //std::cout << res_dip/SQ(pc.cm) <<  " " << res_per/SQ(pc.cm)<<  " " << (res_dip+res_per)/SQ(pc.cm)  << std::endl;
   return res_dip + res_per;
 }
-
 

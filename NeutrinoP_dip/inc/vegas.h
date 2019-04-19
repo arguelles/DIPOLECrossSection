@@ -23,7 +23,7 @@ class VegasIntegrator {
     //static double proton_mass = pc.proton_mass;
 
     double ENERGY = -1;
-    double X,Q2;
+    double X,Y_,Q2;
 
     double Mz2, Mw2, GF2, proton_mass, proton_size;
 
@@ -32,6 +32,7 @@ class VegasIntegrator {
 
     double GSLKernel(double *);
     double GSLKernel_per(double *);
+    double GSLKernel_per_dif(double *);
     double GSLKernel_dip(double *);
     //double Kernel(double, double, double, double);
     double Kernel(double, double, double);
@@ -47,7 +48,8 @@ class VegasIntegrator {
         proton_mass = pc.proton_mass;
         proton_size = 10./pc.GeV;
         };
-    double CalculateNeutrinoCrossSection(double);
+    //double CalculateNeutrinoCrossSection(double);
+    double CalculateDifferentialNeutrinoCrossSection(double, double);
 };
 
 #endif

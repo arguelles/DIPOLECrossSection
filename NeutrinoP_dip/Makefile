@@ -1,22 +1,22 @@
 #PATHS
 CURRENT_DIR 	= $(shell pwd)/
-CONSTANTS		= /home/mkroll/Programs/Physics_Constants/
-GSL             =/home/carguelles/programs/gsl/
-LHAPDF          = /home/mkroll/Programs/LHAPDF613/build/
+#CONSTANTS		= /Users/isafa/Programs/Physics_Constants/
+GSL             = /usr/local/Cellar/gsl/2.5/
+LHAPDF          = /usr/local/Cellar/lhapdf/6.2.1/
 
 SOURCES		    = $(wildcard src/*.cpp)
 OBJECTS 	    = $(SOURCES:.cpp=.o)
 
 INCLUDE_PATH	=  -I/usr/local/include -I./inc
-INCLUDE_PATH   +=  -I$(CONSTANTS)inc
+#INCLUDE_PATH   +=  -I$(CONSTANTS)inc
 INCLUDE_PATH   +=  -I$(GSL)include
 INCLUDE_PATH   += -I$(LHAPDF)include
 
 #Libraries
-LIBS 		   += -lgsl -lgslcblas -lPhysicsConstants
+LIBS 		   += -lgsl -lgslcblas #-lPhysicsConstants
 LIB_PATH	    = -L/usr/local/lib/ -L/usr/lib
-LIB_PATH	   += -L./lib
 LIB_PATH	   += -L$(CONSTANTS)lib
+LIB_PATH	   += -L./lib
 LIB_PATH       +=  -Wl,-rpath -Wl,$(GSL)lib -L$(GSL)lib 
 LIB_PATH    +=  -Wl,-rpath -Wl,$(CURRENT_DIR)/lib -L$(CURRENT_DIR)/lib/
 
@@ -48,7 +48,7 @@ CFLAGS       += -I$(GSL)include
 
 LD		        =  g++
 #LDFLAGS		    =  -L/usr/local/lib/  -L/usr/lib -Wl,-rpath -Wl,$(CURRENT_DIR)/lib -L$(CURRENT_DIR)/lib/
-LDFLAGS		    =  -L/usr/local/lib/  -L/usr/lib
+LDFLAGS		    =  -L/usr/local/lib/  -L/usr/lib -L/usr/local/Cellar/lib
 LDFLAGS		    =  -L$(LHAPDF)lib
 LDFLAGS        +=  -Wl,-rpath -Wl,$(GSL)lib -L$(GSL)lib 
 LDFLAGS        +=  -lgsl -lgslcblas
