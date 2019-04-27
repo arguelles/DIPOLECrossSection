@@ -1,14 +1,14 @@
 #include "wavefunction.h"
 
 double WaveFunction::BesselK0SQ(double x){
-  std::cout << x << std::endl;
+  //std::cout << x << std::endl;
   if (x > 700.)
       return 0.;
   return SQ( gsl_sf_bessel_K0(x) );
 }
 
 double WaveFunction::BesselK1SQ(double x){
-  std::cout << x << std::endl;
+  //std::cout << x << std::endl;
   if (x > 700.)
       return 0.;
   return SQ( gsl_sf_bessel_K1(x) );

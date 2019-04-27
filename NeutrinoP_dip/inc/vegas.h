@@ -29,7 +29,6 @@ class VegasIntegrator {
 
     Dipole * dp;
     bool interaction;
-
     double GSLKernel(double *);
     double GSLKernel_per(double *);
     double GSLKernel_per_dif(double *);
@@ -50,6 +49,7 @@ class VegasIntegrator {
         };
     //double CalculateNeutrinoCrossSection(double);
     double CalculateDifferentialNeutrinoCrossSection(double, double);
+    std::vector<double> logspace(double Emin,double Emax,unsigned int div);
 };
 
 #endif

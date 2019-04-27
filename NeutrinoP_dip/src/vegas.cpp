@@ -25,8 +25,8 @@ double VegasIntegrator::GSLKernel_dip(double* xx){
     double x = xx[0];
     double JAC = 1.0;
 #endif
-    double z = xx[2];
-    double r = xx[3];
+    double z = xx[1];
+    double r = xx[2];
 
     return Kernel_dip(r, z, x, Y_)*JAC;
 }
@@ -52,6 +52,26 @@ double VegasIntegrator::GSLKernel_per_dif(double* xx){
     double JAC = 1.0;
 #endif
     return Kernel_per(x, Y_)*JAC;
+}
+
+
+std::vector<double> VegasIntegrator::logspace(double Emin,double Emax,unsigned int div){
+    if(div==0)
+        throw std::length_error("number of samples requested from logspace must be nonzero");
+    std::vector<double> logpoints{};
+    double Emin_log,Emax_log;
+    Emin_log = log(Emin);
+    Emax_log = log(Emax);
+
+    double step_log = (Emax_log - Emin_log)/double(div-1);
+
+    logpoints.push_back(Emin);
+    double EE = Emin_log+step_log;
+    for(unsigned int i=1; i<div-1; i++, EE+=step_log)
+        logpoints.push_back(exp(EE));
+    logpoints.push_back(Emax);
+
+    return logpoints;
 }
 
 double VegasIntegrator::CalculateDifferentialNeutrinoCrossSection(double enu, double y){

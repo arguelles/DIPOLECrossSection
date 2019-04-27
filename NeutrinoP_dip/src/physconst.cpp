@@ -91,12 +91,10 @@ PhysConst::PhysConst(void){
     Kelvin = 1/1.1604505e4;         // [eV/K]
     // Angle
     degree = pi/180.0;              // [rad/degree]
-    
+
     proton_mass = 0.938272*GeV;
-    neutron_mass = 0.939565*GeV; 
+    neutron_mass = 0.939565*GeV;
     Wboson_mass = 80.385*GeV;
     Zboson_mass = 91.1876*GeV;
-
- 
-};
+}
 

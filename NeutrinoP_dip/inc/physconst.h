@@ -6,7 +6,8 @@
 using namespace std;
 
 class PhysConst {
-    public : 
+    public :
+       // vector<double> logspace(double,double,unsigned int);
         // class identifiers
         string name; 
         string linestyle;

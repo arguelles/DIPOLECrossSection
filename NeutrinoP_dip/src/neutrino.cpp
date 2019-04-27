@@ -154,17 +154,17 @@ double Neutrino::SigRed_Nu_LO(double y, map<int, double> xq_arr, bool charged_cu
     double a   =     y_p + y_m;
     double b   =     y_p - y_m;
 
-    SigRedCoeff[1]   =    a; 
-    SigRedCoeff[-1]  =    b; 
-    SigRedCoeff[2]   =    a; 
-    SigRedCoeff[-2]  =    b; 
-    SigRedCoeff[3]   = 2.*a; 
-    SigRedCoeff[-3]  =   0.; 
-    SigRedCoeff[4]   =   0.; 
-    SigRedCoeff[-4]  = 2.*b; 
-    SigRedCoeff[5]   = 2.*a; 
-    SigRedCoeff[-5]  =   0.; 
-    SigRedCoeff[21]  =   0.; 
+    SigRedCoeff[1]   =    a;
+    SigRedCoeff[-1]  =    b;
+    SigRedCoeff[2]   =    a;
+    SigRedCoeff[-2]  =    b;
+    SigRedCoeff[3]   = 2.*a;
+    SigRedCoeff[-3]  =   0.;
+    SigRedCoeff[4]   =   0.;
+    SigRedCoeff[-4]  = 2.*b;
+    SigRedCoeff[5]   = 2.*a;
+    SigRedCoeff[-5]  =   0.;
+    SigRedCoeff[21]  =   0.;
 
     for (int p : lha_partons){
          k += SigRedCoeff[p]*xq_arr[p];
