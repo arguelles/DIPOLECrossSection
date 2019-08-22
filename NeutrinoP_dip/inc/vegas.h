@@ -31,8 +31,9 @@ class VegasIntegrator {
     bool interaction;
     double GSLKernel(double *);
     double GSLKernel_per(double *);
-    double GSLKernel_per_dif(double *);
     double GSLKernel_dip(double *);
+    double GSLKernel_per_dif(double *);
+    double GSLKernel_dip_dif(double *);
     //double Kernel(double, double, double, double);
     double Kernel(double, double, double);
     double Kernel_dip(double, double, double, double);
@@ -47,7 +48,7 @@ class VegasIntegrator {
         proton_mass = pc.proton_mass;
         proton_size = 10./pc.GeV;
         };
-    //double CalculateNeutrinoCrossSection(double);
+    double CalculateNeutrinoCrossSection(double);
     double CalculateDifferentialNeutrinoCrossSection(double, double);
     std::vector<double> logspace(double Emin,double Emax,unsigned int div);
 };

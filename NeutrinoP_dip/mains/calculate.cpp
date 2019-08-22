@@ -17,6 +17,7 @@ using namespace QuarkValues;
 
 int main(){
     PhysConst pc;
+    bool do_differential = false;
 
     const char* str = "%s\n";
     const char* num = " %7.4e\t %7.4e\t %7.4e\n";
@@ -45,7 +46,8 @@ int main(){
     VegasIntegrator vegas_cc(&dip,true); // true for CC | false for NC
     VegasIntegrator vegas_nc(&dip,false); // true for CC | false for NC
 
-    vector<double> Energy = vegas_cc.logspace(1e6, 1e16,200);
+    //vector<double> Energy = vegas_cc.logspace(1e6, 1e16,200);
+    vector<double> Energy = vegas_cc.logspace(1e11, 1e12,20);
     //vector<double> Y{1*pow(10,-2)};
 
     /*for (int i = 6; i<=16; i++){
@@ -57,17 +59,20 @@ int main(){
     // neutrino interactions
     for (double ein : Energy){
       ein = ein*pc.GeV;
-      for(double eout: Energy){
-        eout = eout*pc.GeV;
-        double y = 1. - eout/ein;
-        if(eout >= ein){
-          printf(num, ein/pc.GeV, eout/pc.GeV, 0.);
-        }
-        else{
-        //double xs_cc = vegas_cc.CalculateNeutrinoCrossSection(e)/SQ(pc.cm);
-        //double xs_nc = vegas_nc.CalculateNeutrinoCrossSection(e)/SQ(pc.cm);
-          double dxs_cc = vegas_cc.CalculateDifferentialNeutrinoCrossSection(ein, y)/SQ(pc.cm);
-          printf(num, ein/pc.GeV, eout/pc.GeV, dxs_cc);
+      double xs_cc = vegas_cc.CalculateNeutrinoCrossSection(ein)/SQ(pc.cm);
+      double xs_nc = vegas_nc.CalculateNeutrinoCrossSection(ein)/SQ(pc.cm);
+      std::cout << ein/pc.GeV << " " << xs_cc << " " << xs_nc << std::endl;
+      if(do_differential){
+        for(double eout: Energy){
+          eout = eout*pc.GeV;
+          double y = 1. - eout/ein;
+          if(eout >= ein){
+            printf(num, ein/pc.GeV, eout/pc.GeV, 0.);
+          }
+          else{
+            double dxs_cc = vegas_cc.CalculateDifferentialNeutrinoCrossSection(ein, y)/SQ(pc.cm);
+            printf(num, ein/pc.GeV, eout/pc.GeV, dxs_cc);
+          }
         }
       }
     }
