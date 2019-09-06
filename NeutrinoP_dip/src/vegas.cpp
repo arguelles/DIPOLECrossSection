@@ -1,13 +1,18 @@
 #include "vegas.h"
 
-#define _LOG_INT_
+//#define _LOG_INT_
+#define _USE_F2_F1_
 
 using namespace QuarkValues;
 
 double VegasIntegrator::Kernel_dip(double r, double z, double x, double y){
 	double s  = 2. * proton_mass * ENERGY;
 	double Q2 = s * x * y;
-  return  (2.*M_PI*r)*s*(1./(2.*M_PI))*nuN->norm(Q2)*0.5*( (1. + SQ(1.-y)) * nuN->FT_dip(x, Q2, r, z) + 2.*(1.-y)*nuN->FL_dip (x, Q2, r, z) ) ;
+#ifdef _USE_F2_F1_
+  return  (2.*M_PI*r)*s*(1./(2.*M_PI))*nuN->norm(Q2)*( (1.-y) * nuN->F2_dip(x, Q2, r, z) + y*y*nuN->F1_dip (x, Q2, r, z) ) ;
+#else
+  return  (2.*M_PI*r)*s*(1./(2.*M_PI))*nuN->norm(Q2)*0.5*( (1. + SQ(1.-y)) * nuN->FT_dip(x, Q2, r, z) + 2.*(1.-y)*nuN->FL_dip >
+#endif
 }
 
 double VegasIntegrator::Kernel_per(double x, double y){
@@ -29,6 +34,10 @@ double VegasIntegrator::GSLKernel_dip(double* xx){
 #endif
     double z = xx[2];
     double r = xx[3];
+
+    //std::cout << proton_size << " " << Kernel_dip(0.1, 0.1, 0.1, 0.1) << std::endl;
+    //std::cout << Kernel_dip(1.77815e-11, 0.189778, 6.51771e-07, 0.158739) << " " <<  2.69715e-07 << std::endl;
+    //std::cout << r << " " << z << " " << x << " " << y  << " " << Kernel_dip(r, z, x, y) << std::endl;
 
     return Kernel_dip(r, z, x, y)*JAC;
 }
@@ -234,7 +243,7 @@ double VegasIntegrator::CalculateNeutrinoCrossSection(double enu){
   gsl_monte_vegas_free ( s_vegas_dip );
   gsl_rng_free(r_dip);
 
-  //std::cout << res_dip/SQ(pc.cm) <<  " " << res_per/SQ(pc.cm)<<  " " << (res_dip+res_per)/SQ(pc.cm)  << std::endl;
+  std::cout << "Partes: " << res_dip/SQ(pc.cm) <<  " " << res_per/SQ(pc.cm)<<  " " << (res_dip+res_per)/SQ(pc.cm)  << std::endl;
   return res_dip + res_per;
 }
 

@@ -47,7 +47,7 @@ int main(){
     VegasIntegrator vegas_nc(&dip,false); // true for CC | false for NC
 
     //vector<double> Energy = vegas_cc.logspace(1e6, 1e16,200);
-    vector<double> Energy = vegas_cc.logspace(1e11, 1e12,20);
+    vector<double> Energy = vegas_cc.logspace(1e11, 1e12,5);
     //vector<double> Y{1*pow(10,-2)};
 
     /*for (int i = 6; i<=16; i++){
@@ -60,8 +60,9 @@ int main(){
     for (double ein : Energy){
       ein = ein*pc.GeV;
       double xs_cc = vegas_cc.CalculateNeutrinoCrossSection(ein)/SQ(pc.cm);
+      std::cout << ein/pc.GeV << " CC " << xs_cc << std::endl;
       double xs_nc = vegas_nc.CalculateNeutrinoCrossSection(ein)/SQ(pc.cm);
-      std::cout << ein/pc.GeV << " " << xs_cc << " " << xs_nc << std::endl;
+      std::cout << ein/pc.GeV << " NC " << xs_nc << std::endl;
       if(do_differential){
         for(double eout: Energy){
           eout = eout*pc.GeV;
