@@ -47,14 +47,15 @@ int main(){
     VegasIntegrator vegas_nc(&dip,false); // true for CC | false for NC
 
     //vector<double> Energy = vegas_cc.logspace(1e6, 1e16,200);
-    vector<double> Energy = vegas_cc.logspace(1e11, 1e12,5);
+    //vector<double> Energy = vegas_cc.logspace(1e11, 1e12,5);
     //vector<double> Y{1*pow(10,-2)};
 
-    /*for (int i = 6; i<=16; i++){
+    vector<double> Energy;
+    for (int i = 11; i<=16; i++){
         Energy.push_back(1.*pow(10., i));
         Energy.push_back(2.*pow(10., i));
         Energy.push_back(5.*pow(10., i));
-    }*/
+    }
 
     // neutrino interactions
     for (double ein : Energy){

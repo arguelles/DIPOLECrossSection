@@ -1,6 +1,6 @@
 #include "vegas.h"
 
-//#define _LOG_INT_
+#define _LOG_INT_
 #define _USE_F2_F1_
 
 using namespace QuarkValues;
