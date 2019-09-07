@@ -12,10 +12,10 @@ Neutrino::Neutrino(Dipole * dp,bool interaction):dp(dp),interaction(interaction)
     Mboson2 = SQ(Mboson);
 
     s_w = 0.2223;
-
+    
     proton_size = 10./pc.GeV;
     N_colors = 3.;
-
+    
     G_Fermi = pc.GF;
     GF2 = SQ(G_Fermi);
 
@@ -37,7 +37,8 @@ Neutrino::Neutrino(Dipole * dp,bool interaction):dp(dp),interaction(interaction)
       }
     }
 #else
-    for( int quark = up; quark < top; quark++){
+    // "massless" quarks only
+    for( int quark = up; quark < charm; quark++){
       if(interaction){
         twf_array.push_back(TBWF(static_cast<bosons>(W)));
         lwf_array.push_back(LBWF(static_cast<bosons>(W)));
@@ -76,14 +77,23 @@ double Neutrino::F2_dip(double x, double Q2, double r, double z){
     double qf = Qf(z, Q2);
     double qf2 = SQ(qf);
 
-    double integrand = dp->SigmaD(x, r) * ( 4.*(qf2*qf2/(Q2))*BesselK0sq(qf * r) + \
-                        qf2*( z*z + (1.-z)*(1.-z) )*BesselK1sq(qf*r) );
-    //double integrand = ( 4.*(qf2*qf2/(Q2))*BesselK0sq(qf * r) + \
+    if (interaction){
+      double integrand = dp->SigmaD(x, r) * ( 4.*(qf2*qf2/(Q2))*BesselK0sq(qf * r) + \
+                          qf2*( z*z + (1.-z)*(1.-z) )*BesselK1sq(qf*r) );
+      double coefficient = N_colors * Q2 / (4.*M_PI*M_PI*M_PI);
+      return coefficient * integrand;
+    } else {
+      double Lu2 = ( 1. - (4./3.)*s_w) * ( 1. - (4./3.)*s_w);
+      double Ld2 = (-1. + (2./3.)*s_w) * (-1. + (2./3.)*s_w);
+      double Ru2 = (    - (4./3.)*s_w) * (    - (4./3.)*s_w);
+      double Rd2 = (      (2./3.)*s_w) * (      (2./3.)*s_w);
+      double nc_coef = Lu2 + Ld2 + Ru2 + Rd2;
+      double integrand = dp->SigmaD(x, r) * ( 4.*(qf2*qf2/(Q2))*BesselK0sq(qf * r)*nc_coef/4. + \
+                          qf2*( z*z + (1.-z)*(1.-z) )*BesselK1sq(qf*r)*nc_coef/4.);
 
-    double coefficient = N_colors * Q2 / (4. * M_PI*M_PI*M_PI);
-    //std::cout << dp->SigmaD(x, r) <<  " " << integrand << " " << coefficient << std::endl;
-
-    return coefficient * integrand;
+      double coefficient = N_colors * Q2 / (4.*M_PI*M_PI*M_PI);
+      return coefficient * integrand;
+    }
 }
 
 
@@ -91,17 +101,24 @@ double Neutrino::F1_dip(double x, double Q2, double r, double z){
     double qf = Qf(z, Q2);
     double qf2 = SQ(qf);
 
-    double integrand = dp->SigmaD(x, r)*( qf2*( z*z + (1.-z)*(1.-z) )*BesselK1sq(qf*r) ); 
-    //double integrand = ( qf2*( z*z + (1.-z)*(1.-z) )*BesselK1sq(qf*r) ); 
-
-    double coefficient = N_colors * Q2 / (2.*4.* M_PI*M_PI*M_PI);
-
-    return coefficient * integrand;
+    if (interaction){
+      double integrand = dp->SigmaD(x, r)*( qf2*( z*z + (1.-z)*(1.-z) )*BesselK1sq(qf*r) );
+      double coefficient = N_colors * Q2 / (2.*4.*M_PI*M_PI*M_PI);
+      return coefficient * integrand;
+    } else {
+      double integrand = dp->SigmaD(x, r)*( qf2*( z*z + (1.-z)*(1.-z) )*BesselK1sq(qf*r) )/4.;
+      double coefficient = N_colors * Q2 / (2.*4.*M_PI*M_PI*M_PI);
+      return coefficient * integrand;
+    }
 }
 
 double Neutrino::FL_dip(double x, double Q2, double r, double z){
   double wf = 0;
+#ifdef _USE_GWF_
   for ( int quark = up; quark < top; quark++){
+#else
+  for ( int quark = up; quark < charm; quark++){
+#endif
     wf += lwf_array[quark].Evaluate(r,z,Q2);
   }
   //std::cout << wf << std::endl;
@@ -110,7 +127,11 @@ double Neutrino::FL_dip(double x, double Q2, double r, double z){
 
 double Neutrino::FT_dip(double x, double Q2, double r, double z){
   double wf = 0;
+#ifdef _USE_GWF_
   for ( int quark = up; quark < top; quark++){
+#else
+  for ( int quark = up; quark < charm; quark++){
+#endif
     wf += twf_array[quark].Evaluate(r,z,Q2);
   }
   //std::cout << wf << std::endl;
@@ -154,17 +175,17 @@ double Neutrino::SigRed_Nu_LO(double y, map<int, double> xq_arr, bool charged_cu
     double a   =     y_p + y_m;
     double b   =     y_p - y_m;
 
-    SigRedCoeff[1]   =    a;
-    SigRedCoeff[-1]  =    b;
-    SigRedCoeff[2]   =    a;
-    SigRedCoeff[-2]  =    b;
-    SigRedCoeff[3]   = 2.*a;
-    SigRedCoeff[-3]  =   0.;
-    SigRedCoeff[4]   =   0.;
-    SigRedCoeff[-4]  = 2.*b;
-    SigRedCoeff[5]   = 2.*a;
-    SigRedCoeff[-5]  =   0.;
-    SigRedCoeff[21]  =   0.;
+    SigRedCoeff[1]   =    a; 
+    SigRedCoeff[-1]  =    b; 
+    SigRedCoeff[2]   =    a; 
+    SigRedCoeff[-2]  =    b; 
+    SigRedCoeff[3]   = 2.*a; 
+    SigRedCoeff[-3]  =   0.; 
+    SigRedCoeff[4]   =   0.; 
+    SigRedCoeff[-4]  = 2.*b; 
+    SigRedCoeff[5]   = 2.*a; 
+    SigRedCoeff[-5]  =   0.; 
+    SigRedCoeff[21]  =   0.; 
 
     for (int p : lha_partons){
          k += SigRedCoeff[p]*xq_arr[p];
